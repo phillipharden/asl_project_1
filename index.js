@@ -15,7 +15,6 @@ app.use("/choices", choicesCtrl);
 
 app.listen(3000); // http://localhost:3000/ in the web browser
 
-
 // COLORFUL COMMENTS
 //! Red (!)
 //? Blue (?)

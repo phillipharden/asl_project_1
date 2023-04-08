@@ -11,7 +11,7 @@ router.get("/", (req, res) => {
 });
 
 //* Create a new choice
-//^ curl -X POST --data "id=5&name=F" http://localhost:3000/choices
+//^ curl -X POST --data "id=6&name=F" http://localhost:3000/choices
 router.post("/", (req, res) => {
   const { id, name } = req.body;
   choices.push({
