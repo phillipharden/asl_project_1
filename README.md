@@ -1,5 +1,3 @@
-### Database Abstraction Layers
-
-mysql -uroot
+### Model Associations
 
 
