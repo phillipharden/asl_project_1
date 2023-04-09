@@ -1,53 +1,54 @@
 const express = require("express");
 const router = express.Router();
-let quizzes = require("../models/quizzes");
+const { Quiz } = require("../models");
 const bodyParser = require("body-parser");
 router.use(bodyParser.urlencoded({ extended: false }));
 
 //* View the quizzes
 //^ curl -X GET http://localhost:3000/quizzes
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+  const quizzes = await Quiz.findAll();
   res.json(quizzes);
 });
 
 //* Create a new quiz
-//^ curl -X POST --data "id=5&name=ASL%20Quiz%20Five" http://localhost:3000/quizzes
-router.post("/", (req, res) => {
-  const { id, name } = req.body;
-  quizzes.push({
-    id: Number(id),
-    name,
-  });
-  res.json(quizzes);
+//^ curl -X POST --data "name=New%20Quiz" http://localhost:3000/quizzes
+router.post("/", async (req, res) => {
+  const { name } = req.body;
+  const quiz = await Quiz.create({ name });
+  res.json(quiz);
 });
 
 //* View a single Quiz by id
 //^ curl -X GET http://localhost:3000/quizzes/1
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  const quiz = quizzes.find((q) => q.id == id);
+router.get("/:id", async (req, res) => {
+  const quiz = await Quiz.findByPk(req.params.id);
   res.json(quiz);
 });
 
 //* Update/Edit a quiz by id
-//^ curl -X POST --data "id=1&name=ASL%20Quiz%20One%20is%20changed" http://localhost:3000/quizzes/1
-router.post("/:id", (req, res) => {
-  const id = Number(req.params.id);
-  quizzes.map((q) => {
-    if (id === q.id) {
-      q.name = req.body.name;
+//^ curl -X POST --data "name=Quiz%20Name%20Changed" http://localhost:3000/quizzes/1
+
+router.post("/:id", async (req, res) => {
+  const { name } = req.body;
+  const { id } = req.params;
+  const quiz = await Quiz.update(
+    { name },
+    {
+      where: { id },
     }
-    return q;
-  });
-  res.json(quizzes);
+  );
+  res.json(quiz);
 });
 
 //* Delete a quiz by id
 //^ curl -X DELETE http://localhost:3000/quizzes/1
-router.delete("/:id", (req, res) => {
-  const id = Number(req.params.id);
-  quizzes = quizzes.filter((q) => q.id !== id);
-  res.json(quizzes);
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  const deleted = await Quiz.destroy({
+    where: { id },
+  });
+  res.json({ deleted });
 });
 
 module.exports = router;
