@@ -1,4 +1,4 @@
-### Model Associations
+### Templating Engines
 
 To open sql:
 mysql -uroot
