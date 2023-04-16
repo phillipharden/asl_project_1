@@ -1,7 +1,11 @@
-{% extends "layouts/_default.twig" %} {% block main_content %}
+{% extends "layouts/_default.twig" %} 
+
+{% block main_content %}
+<div class="mt-5">
+<h1>Quizzes</h1>
 <ul class="list-group my-3">
   {% for quiz in quizzes %}
-  <li class="list-group-item d-inline-block">
+  <li class="list-group-item d-inline-block" style="background-color: #B6B6B4;">
     <p class="h2">{{ quiz.name }}</p>
     {% if quiz.weight %} <p class="small">Weight: {{ quiz.weight }}%</p> {% endif %} 
     <a class="btn btn-primary" href="/quizzes/{{ quiz.id }}/edit">Edit</a>    
@@ -10,8 +14,9 @@
   </li>
   {% endfor %}
 </ul>
-<p>
+
   <a class="btn btn-primary" href="/quizzes/new">Create a Quiz</a>
-</p>
+  <a class="btn btn-primary" href="/">Return Home</a>
+</div>
 
 {% endblock %}

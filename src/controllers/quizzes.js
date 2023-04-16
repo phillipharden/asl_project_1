@@ -50,7 +50,7 @@ router.get("/:id/edit", async (req, res) => {
 });
 
 //* Update/Edit a quiz by id
-//^ curl -H "accept: application/json" -X POST --data "name=Renamed&weight=75" http://localhost:3000/quizzes/8
+//^ curl -H "accept: application/json" -X POST --data "name=Renamed&weight=75" http://localhost:3000/quizzes/27
 router.post("/:id", async (req, res) => {
   const { name, weight } = req.body;
   const { id } = req.params;
@@ -68,7 +68,7 @@ router.post("/:id", async (req, res) => {
 });
 
 //* Delete a quiz by id
-//^ curl -H "accept: application/json" -X GET http://localhost:3000/quizzes/21/delete
+//^ curl -H "accept: application/json" -X GET http://localhost:3000/quizzes/27/delete
 router.get("/:id/delete", async (req, res) => {
   const { id } = req.params;
   const deleted = await Quiz.destroy({

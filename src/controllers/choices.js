@@ -5,29 +5,52 @@ const bodyParser = require("body-parser");
 router.use(bodyParser.urlencoded({ extended: false }));
 
 //* View the choices
-//^ curl -X GET http://localhost:3000/choices
+//^ curl -H "accept: application/json" http://localhost:3000/choices
 router.get("/", async (req, res) => {
   const choices = await Choice.findAll();
-  res.json(choices);
+  if (req.headers.accept.indexOf("/json") > -1) {
+    res.json(choices);
+  } else {
+    res.render("choice/index", { choices });
+  }
+});
+
+//* Form
+router.get("/new", (req, res) => {
+  res.render("choice/create");
 });
 
 //* Create a new choice
-//^ curl -X POST --data "name=D" http://localhost:3000/choices
+//^ curl -H "accept: application/json" -X POST --data "name=AA" http://localhost:3000/choices
 router.post("/", async (req, res) => {
   const { name } = req.body;
   const choice = await Choice.create({ name });
-  res.json(choice);
+  if (req.headers.accept.indexOf("/json") > -1) {
+    res.json(choice);
+  } else {
+    res.redirect("/choices/" + choice.id);
+  }
 });
 
 //* View a single choice by id
-//^ curl -X GET http://localhost:3000/choices/1
+//^ curl -H "accept: application/json" -X GET http://localhost:3000/choices/1
 router.get("/:id", async (req, res) => {
   const choice = await Choice.findByPk(req.params.id);
-  res.json(choice);
+  if (req.headers.accept.indexOf("/json") > -1) {
+    res.json(choice);
+  } else {
+    res.render("choice/show", { choice });
+  }
+});
+
+//* Form
+router.get("/:id/edit", async (req, res) => {
+  const choice = await Choice.findByPk(req.params.id);
+  res.render("choice/edit", { choice });
 });
 
 //* Update/Edit a choice by id
-//^ curl -X POST --data "name=DD" http://localhost:3000/choices/1
+//^ curl -H "accept: application/json" -X POST --data "name=Choice A" http://localhost:3000/choices/1
 router.post("/:id", async (req, res) => {
   const { name } = req.body;
   const { id } = req.params;
@@ -37,17 +60,25 @@ router.post("/:id", async (req, res) => {
       where: { id },
     }
   );
-  res.json(choice);
+  if (req.headers.accept.indexOf("/json") > -1) {
+    res.json(choice);
+  } else {
+    res.redirect("/choices/" + id);
+  }
 });
 
 //* Delete a choice by id
-//^ curl -X DELETE http://localhost:3000/choices/1
-router.delete("/:id", async (req, res) => {
+//^ curl -H "accept: application/json" -X GET http://localhost:3000/choices/8/delete
+router.get("/:id/delete", async (req, res) => {
   const { id } = req.params;
   const deleted = await Choice.destroy({
     where: { id },
   });
-  res.json({ deleted });
+  if (req.headers.accept.indexOf("/json") > -1) {
+    res.json({'success': true});
+  } else {
+    res.redirect("/choices");
+  }
 });
 
 module.exports = router;

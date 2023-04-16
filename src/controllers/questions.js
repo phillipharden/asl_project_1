@@ -5,29 +5,52 @@ const bodyParser = require("body-parser");
 router.use(bodyParser.urlencoded({ extended: false }));
 
 //* View the questions
-//^ curl -X GET http://localhost:3000/questions
+//^ curl -H "accept: application/json" -X GET http://localhost:3000/questions
 router.get("/", async (req, res) => {
   const questions = await Question.findAll();
-  res.json(questions);
+  if (req.headers.accept.indexOf("/json") > -1) {
+    res.json(questions);
+  } else {
+    res.render("question/index", { questions });
+  }
+});
+
+//* Form
+router.get("/new", (req, res) => {
+  res.render("question/create");
 });
 
 //* Create a new question
-//^ curl -X POST --data "name=What is a RESTful API?" http://localhost:3000/questions
+//^ curl -H "accept: application/json" -X POST --data "name=New question" http://localhost:3000/questions
 router.post("/", async (req, res) => {
   const { name } = req.body;
   const question = await Question.create({ name });
-  res.json(question);
+  if (req.headers.accept.indexOf("/json") > -1) {
+    res.json(question);
+  } else {
+    res.redirect("/questions/" + question.id);
+  }
 });
 
 //* View a single question by id
-//^ curl -X GET http://localhost:3000/questions/1
+//^ curl -H "accept: application/json" -X GET http://localhost:3000/questions/9
 router.get("/:id", async (req, res) => {
   const question = await Question.findByPk(req.params.id);
-  res.json(question);
+  if (req.headers.accept.indexOf("/json") > -1) {
+    res.json(question);
+  } else {
+    res.render("question/show", { question });
+  }
+});
+
+//* Form
+router.get("/:id/edit", async (req, res) => {
+  const question = await Question.findByPk(req.params.id);
+  res.render("question/edit", { question });
 });
 
 //* Update/Edit a question by id
-//^ curl -X POST --data "name=How Are you?" http://localhost:3000/questions/1
+//^ curl -H "accept: application/json" -X POST --data "name=How Are you?" http://localhost:3000/questions/9
 router.post("/:id", async (req, res) => {
   const { name } = req.body;
   const { id } = req.params;
@@ -37,17 +60,25 @@ router.post("/:id", async (req, res) => {
       where: { id },
     }
   );
-  res.json(question);
+  if (req.headers.accept.indexOf("/json") > -1) {
+    res.json(question);
+  } else {
+    res.redirect("/questions/" + id);
+  }
 });
 
 //* Delete a question by id
-//^ curl -X DELETE http://localhost:3000/questions/4
-router.delete("/:id", async (req, res) => {
+//^ curl -H "accept: application/json" -X GET http://localhost:3000/questions/10/delete
+router.get("/:id/delete", async (req, res) => {
   const { id } = req.params;
   const deleted = await Question.destroy({
     where: { id },
   });
-  res.json({ deleted });
+  if (req.headers.accept.indexOf("/json") > -1) {
+    res.json({'success': true});
+  } else {
+    res.redirect("/questions");
+  }
 });
 
 module.exports = router;
