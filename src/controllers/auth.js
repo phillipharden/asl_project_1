@@ -22,6 +22,21 @@ router.get("/callback", async (req, res) => {
       const { access_token } = querystring.parse(body);
       req.session.access_token = access_token;
       res.redirect("/");
+      await request(
+        {
+          uri: "https://api.github.com/user",
+          headers: {
+            Authorization: `token ${access_token}`,
+            "User-Agent": "Mozilla/5.0", //this is a lie
+          },
+        },
+        // async (error, response, body) => {
+        //   const obj = JSON.parse(body);
+        //   const username = obj.login;
+        //   console.log("User_name: (inside)" + username); // Output: "PhillipHarden"
+        //   req.session.username = username;
+        // }
+      );      
     }
   );
 });

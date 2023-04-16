@@ -3,10 +3,10 @@ const router = express.Router();
 const { Question } = require("../models");
 const bodyParser = require("body-parser");
 router.use(bodyParser.urlencoded({ extended: false }));
+const { isAuthenticated } = require("../middlewares/auth");
 
 //* View the questions
-//^ curl -H "accept: application/json" -X GET http://localhost:3000/questions
-router.get("/", async (req, res) => {
+router.get("/", isAuthenticated, async (req, res) => {
   const questions = await Question.findAll();
   if (req.headers.accept.indexOf("/json") > -1) {
     res.json(questions);
@@ -16,13 +16,12 @@ router.get("/", async (req, res) => {
 });
 
 //* Form
-router.get("/new", (req, res) => {
+router.get("/new", isAuthenticated, (req, res) => {
   res.render("question/create");
 });
 
 //* Create a new question
-//^ curl -H "accept: application/json" -X POST --data "name=New question" http://localhost:3000/questions
-router.post("/", async (req, res) => {
+router.post("/", isAuthenticated, async (req, res) => {
   const { name } = req.body;
   const question = await Question.create({ name });
   if (req.headers.accept.indexOf("/json") > -1) {
@@ -33,8 +32,7 @@ router.post("/", async (req, res) => {
 });
 
 //* View a single question by id
-//^ curl -H "accept: application/json" -X GET http://localhost:3000/questions/9
-router.get("/:id", async (req, res) => {
+router.get("/:id", isAuthenticated, async (req, res) => {
   const question = await Question.findByPk(req.params.id);
   if (req.headers.accept.indexOf("/json") > -1) {
     res.json(question);
@@ -44,14 +42,13 @@ router.get("/:id", async (req, res) => {
 });
 
 //* Form
-router.get("/:id/edit", async (req, res) => {
+router.get("/:id/edit", isAuthenticated, async (req, res) => {
   const question = await Question.findByPk(req.params.id);
   res.render("question/edit", { question });
 });
 
 //* Update/Edit a question by id
-//^ curl -H "accept: application/json" -X POST --data "name=How Are you?" http://localhost:3000/questions/9
-router.post("/:id", async (req, res) => {
+router.post("/:id", isAuthenticated, async (req, res) => {
   const { name } = req.body;
   const { id } = req.params;
   const question = await Question.update(
@@ -68,8 +65,7 @@ router.post("/:id", async (req, res) => {
 });
 
 //* Delete a question by id
-//^ curl -H "accept: application/json" -X GET http://localhost:3000/questions/10/delete
-router.get("/:id/delete", async (req, res) => {
+router.get("/:id/delete", isAuthenticated, async (req, res) => {
   const { id } = req.params;
   const deleted = await Question.destroy({
     where: { id },

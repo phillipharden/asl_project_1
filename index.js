@@ -22,7 +22,7 @@ app.set("view engine", "twig");
 
 // GET / HTTP/1.1
 app.get("/", async (req, res, next ) => {
-  console.log(req.session.access_token);
+  // console.log("Access token: " + req.session.access_token);
   res.render("home/home");
 });
 
