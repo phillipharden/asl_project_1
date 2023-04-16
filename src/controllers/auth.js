@@ -20,20 +20,8 @@ router.get("/callback", async (req, res) => {
     },
     async (error, response, body) => {
       const { access_token } = querystring.parse(body);
-      // curl -H "Authorization: token 1234example5678" https://api.github.com/user
-      await request(
-        {
-          uri: "https://api.github.com/user",
-          headers: {
-            Authorization: `token ${access_token}`,
-            "User-Agent": "Mozilla/5.0", //this is a lie
-          },
-        },
-        async (error, response, body) => {
-          const data = querystring.parse(body);
-          res.json(data);
-        }
-      );
+      req.session.access_token = access_token;
+      res.redirect("/");
     }
   );
 });
