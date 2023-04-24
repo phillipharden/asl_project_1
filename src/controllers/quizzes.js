@@ -6,7 +6,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 const { isAuthenticated } = require("../middlewares/auth");
 
 //* View the quizzes
-router.get("/", isAuthenticated, async (req, res) => {
+router.get("/", async (req, res) => {
   const quizzes = await Quiz.findAll(); // Loads all Quizzes
   if (req.headers.accept.indexOf("/json") > -1) {
     res.json(quizzes);
@@ -14,6 +14,8 @@ router.get("/", isAuthenticated, async (req, res) => {
     res.render("quiz/index", { quizzes });
   }
 });
+
+
 
 //* Form
 router.get("/new", isAuthenticated, (req, res) => {

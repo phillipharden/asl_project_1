@@ -1,76 +1,77 @@
+//  Template: https://startbootstrap.com/previews/modern-business
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Navigation from "./Navigation";
-import Home from "./Home";
+import Navbar from "./Navbar";
+import Home from "./pages/Home";
+import QuizzesPage from "./pages/QuizzesPage";
 import Login from "./Login";
-import Quiz from "./Quiz";
+import Quiz from "./pages/Quiz";
 import queryString from "querystring";
 
 const App = () => {
   const [jwt, setJwt] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
     async function fetchJwt() {
       const params = queryString.parse(
         window.location.search.replace(/^\?/, "")
       );
+      console.log(localStorage.token);
       localStorage.token = params.token;
+      console.log(params.token);
+      console.log(localStorage.token);
       const response = await axios("http://localhost:3000/auth/token/", {
         headers: {
           token: localStorage.token,
         },
       });
-      setJwt(response.data.token);
+      console.log(loggedIn);
+      console.log(response.data.name);
+      if (response.data.name) {
+        setLoggedIn(true);
+      }
+      setJwt(response.data.name);
     }
     fetchJwt();
   }, []);
-
-  if (!jwt) {
-    return <Login />;
-  }
+  console.log(jwt);
 
   return (
-    <Router>
-      <div className="App">
-        <Navigation isLoggedIn={jwt ? true : false} />
-        <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/quizzes/:id" element={<Quiz />} />
-        </Routes>
-      </div>
-    </Router>
+    <div className="body">
+      <Router>
+        <Navbar isLoggedIn={loggedIn} />
+        <div className="container-lg mt-5">
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route exact path="/QuizzesPage" element={<QuizzesPage />} />
+            <Route exact path="/quizzes/:id" element={<Quiz />} />
+          </Routes>
+        </div>
+      </Router>
+    </div>
   );
 };
 
-// class App extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     // Don't call this.setState() here!
-//     this.state = { jwt: '' };
-//   }
-//   async componentDidMount() {
-//     const jwt = await axios('http://localhost:3000/auth/token')
-//     this.setState({ jwt: jwt.data.token })
-//   }
-//   render() {
-//     // If we are not logged in
-//     if (!this.state.jwt) {
-//       return <Login />;
-//     }
+export default App;
 
-//     return (
-//       <Router>
-//         <div className="App">
-//           <Navigation isLoggedIn={this.state.jwt ? true : false} />
-//           <Routes>
-//             <Route exact path='/' element={<Home />} />
-//             <Route exact path='/quizzes/:id' element={<Quiz {...this.props} />} />
-//           </Routes>
-//         </div>
-//       </Router>
-//     );
-//   }
+// if (!jwt) {
+//   return (
+//     <div>
+//       <Login />
+//     </div>
+//   );
 // }
 
-export default App;
+// return (
+//   <Router>
+//     <div className="App">
+//       <Navbar isLoggedIn={jwt ? true : false} />
+//       <Routes>
+//         <Route exact path="/" element={<Home />} />
+//         <Route exact path="/quizzes/:id" element={<Quiz />} />
+//       </Routes>
+//     </div>
+//   </Router>
+// );

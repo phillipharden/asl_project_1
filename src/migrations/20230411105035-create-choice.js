@@ -12,6 +12,16 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
+      questionId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: "Questions",
+          },
+          key: "id",
+        },
+        allowNull: true,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
