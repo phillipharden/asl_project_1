@@ -6,7 +6,7 @@ class Navbar extends Component {
   render() {
     return (
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div className="container px-5">
+        <div className="container-sm px-5">
           <a className="navbar-brand" href="/">
             <i class="bi bi-github m-2"></i>
             Takin' Quizzes
