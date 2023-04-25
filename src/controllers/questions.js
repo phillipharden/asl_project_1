@@ -21,6 +21,7 @@ router.get("/new", isAuthenticated, (req, res) => {
 });
 
 //* Create a new question
+//^ curl -X POST --data "name=What is a RESTful API?" http://localhost:3000/questions
 router.post("/", isAuthenticated, async (req, res) => {
   const { name } = req.body;
   const question = await Question.create({ name });
@@ -93,3 +94,16 @@ module.exports = router;
 //! curl -X POST --data "name=What is a payload in a RESTful API?" http://localhost:3000/questions
 //! curl -X POST --data "name=What is the difference between JSON and XML in a RESTful API?" http://localhost:3000/questions
 //! curl -X POST --data "name=What are the advantages of using RESTful APIs?" http://localhost:3000/questions
+
+
+
+//! curl -H "accept: application/json" -X POST --data "name=New question" http://localhost:3000/questions
+
+//^ curl -H "accept: application/json" -X POST --data "name=New Quiz&weight=25" http://localhost:3000/questions
+
+
+//^ curl -H "accept: application/json" -X POST --data "name=What is the capital of France?&quizId=1" http://localhost:3000/questions
+//! curl -X POST -H "Content-Type: application/json" -d '{"name": "What is the capital of France?", "quizId": 1}' http://localhost:3000/questions
+
+//! curl -X POST -H "Content-Type: application/json" -d '{"name": "What is the capital of France?", "quizId": 1}' http://localhost:3000/questions
+

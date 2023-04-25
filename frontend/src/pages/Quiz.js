@@ -12,15 +12,15 @@ const Quiz = () => {
           token: localStorage.token,
         },
       });
-      console.log("Quiz.js line 15 below: ");
-      console.log("Quiz.js line 15 " + q.data);
       setQuiz(q.data);
     }
     fetchQuiz();
   }, []);
+  console.log(quiz)
   return (
     <div className="">
       <h1 className="">{quiz.name} Quiz</h1>
+      <p>{quiz.weight}%</p>
       <form
         action="http://localhost:3000/auth/success"
         id="quiz"

@@ -55,7 +55,6 @@ class Navbar extends Component {
                 </li>
               )}
             </ul>
-            <i class="bi bi-person-circle h1"></i>
           </div>
         </div>
       </nav>
